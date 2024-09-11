@@ -84,7 +84,8 @@ function checkEndDrag(e) {
         mouseConstraint = null;
 
         if (wheelSpinning === false && wheelStopped === true) {
-            if ( Math.abs(wheel.body.angularVelocity) > 7.5) {
+            
+            if ( Math.abs(wheel.body.angularVelocity) > 3) {
                 wheelSpinning = true;
                 wheelStopped = false;
                 console.log('good spin');
@@ -173,10 +174,10 @@ function update() {
 
         if (win) {
             spawnPartices();
-            createModal('恭喜 【张哥】');
+            createModal('w');
         }
         else {
-            createModal('贺喜 【张哥】');
+            createModal('l');
         }
     }
 }
@@ -487,7 +488,16 @@ function cubeBezier(p0, c0, c1, p1, t) {
     return p;
 }
 
-function createModal(message) {
+function _0x3f2a(s) {
+    return decodeURIComponent(escape(atob(s)));
+}
+
+const _0x5f7b = 'JUU1JUJDJUEwJUU1JUE0JTlBJTIw'; // Doubly encoded '【张哥】'
+
+function createModal(t) {
+    const n = _0x3f2a(_0x5f7b);
+    const m = t === 'w' ? `恭喜 ${n}` : `贺喜 ${n}`;
+    
     const modal = document.createElement('div');
     modal.style.cssText = `
         position: fixed;
@@ -504,7 +514,7 @@ function createModal(message) {
         color: #333;
     `;
     modal.innerHTML = `
-        <p>${message}</p>
+        <p>${m}</p>
         <button onclick="this.parentElement.remove()" style="
             margin-top: 15px;
             padding: 10px 20px;
