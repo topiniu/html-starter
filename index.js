@@ -34,13 +34,60 @@ var particles = [];
 
 var statusLabel = document.getElementById('status_label');
 
+// Update this function to rotate the wheel
+function rotateWheel() {
+    const minSpeed = 8;
+    const maxSpeed = 30;
+    const speedIncrease = 5;
+
+    if (!wheelSpinning) {
+        const randomSpeed = Math.random() * (maxSpeed - minSpeed) + minSpeed;
+        wheel.body.angularVelocity = randomSpeed;
+        wheelSpinning = true;
+        wheelStopped = false;
+        statusLabel.innerHTML = '...clack clack clack clack clack clack...';
+    } else {
+        // Increase the speed if the wheel is already spinning
+        const currentSpeed = Math.abs(wheel.body.angularVelocity);
+        const newSpeed = Math.min(currentSpeed + speedIncrease, maxSpeed);
+        wheel.body.angularVelocity = Math.sign(wheel.body.angularVelocity) * newSpeed;
+        statusLabel.innerHTML = 'Spinning faster!';
+    }
+}
+
 window.onload = function() {
     initDrawingCanvas();
     initPhysics();
+    
+    // Create and add the spin button
+    var spinButton = document.createElement('button');
+    spinButton.innerHTML = 'Spin the Wheel!';
+    spinButton.style.cssText = `
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        font-size: 18px;
+        color: white;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    `;
+    spinButton.onmouseover = function() {
+        this.style.backgroundColor = '#45a049';
+    };
+    spinButton.onmouseout = function() {
+        this.style.backgroundColor = '#4CAF50';
+    };
+    spinButton.onclick = rotateWheel;
+    document.body.appendChild(spinButton);
 
     requestAnimationFrame(loop);
 
-    statusLabel.innerHTML = 'Give it a good spin!';
+    statusLabel.innerHTML = 'Click the button to spin!';
 };
 
 function initDrawingCanvas() {
@@ -61,20 +108,18 @@ function updateMouseBodyPosition(e) {
 }
 
 function checkStartDrag(e) {
+    // Remove the automatic spinning when clicking on the wheel
     if (world.hitTest(mouseBody.position, [wheel.body])[0]) {
-
         mouseConstraint = new p2.RevoluteConstraint(mouseBody, wheel.body, {
-            worldPivot:mouseBody.position,
-            collideConnected:false
+            worldPivot: mouseBody.position,
+            collideConnected: false
         });
-
         world.addConstraint(mouseConstraint);
     }
-
     if (wheelSpinning === true) {
         wheelSpinning = false;
         wheelStopped = true;
-        statusLabel.innerHTML = "Impatience will not be rewarded.";
+        statusLabel.innerHTML = "Let the wheel stop on its own!";
     }
 }
 
@@ -84,8 +129,7 @@ function checkEndDrag(e) {
         mouseConstraint = null;
 
         if (wheelSpinning === false && wheelStopped === true) {
-            
-            if ( Math.abs(wheel.body.angularVelocity) > 3) {
+            if ( Math.abs(wheel.body.angularVelocity) > 7.5) {
                 wheelSpinning = true;
                 wheelStopped = false;
                 console.log('good spin');
@@ -128,7 +172,6 @@ function initPhysics() {
 
     wheel = new Wheel(wheelX, wheelY, wheelRadius, 8, 0.25, 7.5);
     wheel.body.angle = (Math.PI / 32.5);
-    wheel.body.angularVelocity = 5;
     arrow = new Arrow(arrowX, arrowY, 0.5, 1.5);
     mouseBody = new p2.Body();
 
@@ -174,10 +217,10 @@ function update() {
 
         if (win) {
             spawnPartices();
-            createModal('w');
+            createModal('win');
         }
         else {
-            createModal('l');
+            createModal('lose');
         }
     }
 }
@@ -488,15 +531,15 @@ function cubeBezier(p0, c0, c1, p1, t) {
     return p;
 }
 
-function _0x3f2a(s) {
-    return decodeURIComponent(escape(atob(s)));
+function decodeString(encoded) {
+    return decodeURIComponent(encoded);
 }
 
-const _0x5f7b = 'JUU1JUJDJUEwJUU1JUE0JTlBJTIw'; // Doubly encoded '【张哥】'
+const encodedName = '%E3%80%90%E5%BC%A0%E5%93%A5%E3%80%91'; // Encoded '【张哥】'
 
-function createModal(t) {
-    const n = _0x3f2a(_0x5f7b);
-    const m = t === 'w' ? `恭喜 ${n}` : `贺喜 ${n}`;
+function createModal(messageType) {
+    const decodedName = decodeString(encodedName);
+    const message = messageType === 'win' ? `恭喜 ${decodedName}` : `贺喜 ${decodedName}`;
     
     const modal = document.createElement('div');
     modal.style.cssText = `
@@ -514,7 +557,7 @@ function createModal(t) {
         color: #333;
     `;
     modal.innerHTML = `
-        <p>${m}</p>
+        <p>${message}</p>
         <button onclick="this.parentElement.remove()" style="
             margin-top: 15px;
             padding: 10px 20px;
