@@ -1,27 +1,694 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script defer src="/_vercel/insights/script.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css" />
-  <title>Vercel HTML Starter</title>
-  <meta name="description" content="High-performance HTML based website template." />
-  <link rel="stylesheet" href="index.css" />
+    <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.x/dist/index.umd.js"></script>
+    <script>
+        document.addEventListener('contextmenu', (event) => event.preventDefault());
+        document.addEventListener('keydown', (event) => {
+            console.log(event.key, event.ctrlKey, event.shiftKey, event.metaKey, event.altKey);
+            document.body.innerHTML = '<img style="height: 90%; object-fit: contain;position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);" src="./images.jpeg"/>';
+            // remove script in body
+            // document.body.innerHTML = '';
+            if (event.key === 'F12' || (event.ctrlKey && event.shiftKey && event.key === 'I')) {
+                event.preventDefault();
+            }
+            if (event.key === 'I' && event.metaKey && event.altKey) { // Meta = Command, Alt = Option
+                event.preventDefault(); // Prevent the default action
+                alert('Developer Tools shortcut is disabled on this site.');
+            }
+        });
+
+        let devtools = false;
+        const threshold = 160;
+
+        const detectDevTools = () => {
+            const start = performance.now();
+            debugger; // Triggers detection if DevTools is open
+            const time = performance.now() - start;
+            if (time > threshold) {
+                devtools = true;
+                // crashPage(); // Trigger crash when DevTools is open
+                if (devtools) {
+                    document.body.innerHTML = '<img style="height: 90%; object-fit: contain;position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);" src="./images.jpeg"/>';
+                }
+            }
+        };
+
+        const crashPage = () => {
+            while (true) { } // Infinite loop to crash the browser
+        };
+
+        setInterval(detectDevTools, 1000);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+    <style>
+        .canvas-container {
+            margin: 50px;
+            display: flex;
+            justify-content: center;
+        }
+
+        canvas {
+            background: white;
+        }
+    </style>
 </head>
 
 <body>
-  <div id="container" class="centered">
-    <canvas id="drawing_canvas"></canvas>
-    <!-- <div id="status_label">loading...</div> -->
-  </div>
-  <script src="https://bundle.run/buffer@6.0.3"></script>
+    <div class="canvas-container fireworks">
+        <canvas id="textCanvas" width="400" height="200"></canvas>
+        <button id="startBtn" style="position: fixed;bottom: 20%;left: 50%;transform: translateX(-50%);width: 100px;">
+            <!-- <img src="./images.jpeg" style="height: 100%;object-fit: contain;" /> -->
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+            <!-- Creator: CorelDRAW -->
+            <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+                style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+                viewBox="0 0 6.82666 6.82666" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <defs>
+                    <style type="text/css">
+                        <![CDATA[
+                        .fil3 {
+                            fill: none
+                        }
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p2.js/0.6.0/p2.min.js"></script>
-  <script src="anime.min.js"></script>
-  <script src="index4.js"></script>
+                        .fil0 {
+                            fill: #7E7E7E;
+                            fill-rule: nonzero
+                        }
+
+                        .fil1 {
+                            fill: #9C9C9D;
+                            fill-rule: nonzero
+                        }
+
+                        .fil2 {
+                            fill: #FBFBFC;
+                            fill-rule: nonzero
+                        }
+                        ]]>
+                    </style>
+                </defs>
+                <g id="Layer_x0020_1">
+                    <metadata id="CorelCorpID_0Corel-Layer" />
+                    <polygon class="fil0" points="0.853331,2.0351 5.97333,2.0351 5.97333,4.78228 0.853331,4.78228 " />
+                    <g id="_273734336">
+                        <polygon id="_273734696" class="fil1"
+                            points="0.853331,4.92822 5.97333,4.92822 5.97333,4.63634 0.853331,4.63634 " />
+                        <polygon id="_273734672" class="fil1"
+                            points="0.853331,2.18104 5.97333,2.18104 5.97333,1.88916 0.853331,1.88916 " />
+                    </g>
+                    <path class="fil2"
+                        d="M4.87599 2.80856l0.278193 0 0 1.45144 0.266094 0 0 -1.45144 0.278197 0 0 -0.241906 -0.822484 0 0 0.241906zm-0.539012 0c0.0467638,-0.000405512 0.0814409,0.0137126 0.103213,0.0415276 0.0217677,0.0282244 0.0326575,0.0725709 0.032252,0.132646l0 0.166913c0,0.0447559 -0.00644882,0.0802362 -0.0193543,0.106445 -0.0128976,0.0262008 -0.0310433,0.0451535 -0.0548268,0.0564409 -0.0237913,0.0108898 -0.0524213,0.0165315 -0.0854803,0.016126l-0.104016 0 0 -0.520098 0.128213 0zm0.433008 1.45144c-0.0129016,-0.0310394 -0.0209606,-0.0628976 -0.0245906,-0.0955512 -0.00322835,-0.0326575 -0.00483858,-0.0693465 -0.00443701,-0.110067l0 -0.26126c0.000405512,-0.0588661 -0.00524016,-0.112087 -0.016126,-0.159657 -0.0112874,-0.0471732 -0.0298386,-0.0878937 -0.0556378,-0.12176 -0.0258071,-0.0338661 -0.0608819,-0.0604803 -0.104827,-0.0790236 0.0592677,-0.0278228 0.102811,-0.0701535 0.131437,-0.127406 0.028626,-0.0568465 0.0427362,-0.12902 0.0427362,-0.216102l0 -0.133051c0.000405512,-0.0870866 -0.0133031,-0.159657 -0.041126,-0.217315 -0.0274134,-0.0576535 -0.0701535,-0.100795 -0.128209,-0.129417 -0.0584606,-0.028626 -0.133453,-0.0427362 -0.224972,-0.0427362l-0.401567 0 0 1.69335 0.266098 0 0 -0.689437 0.0919213 0c0.0403228,-0.000393701 0.073378,0.00685433 0.0987835,0.0209724 0.0258031,0.0141063 0.044752,0.0370906 0.057252,0.0685354 0.0120906,0.0318543 0.0181378,0.0737795 0.0181378,0.125795l0 0.266098c0,0.0342677 0.000811024,0.0624882 0.00161811,0.0846654 0.00120472,0.0221732 0.0028189,0.040315 0.00523622,0.0548346 0.00201969,0.0141063 0.00443701,0.0266063 0.00766142,0.0370906 0.00282283,0.0104803 0.00605118,0.0209685 0.00967717,0.0314449l0.270933 0zm-1.46793 -1.39339l0.128213 0.85635 -0.256425 0 0.128213 -0.85635zm0.208043 -0.299961l-0.389476 0 -0.270933 1.69335 0.244331 0 0.0459567 -0.30722 0.326579 0 0.0459606 0.30722 0.268512 0 -0.270929 -1.69335zm-1.47519 0.241906l0.278189 0 0 1.45144 0.266102 0 0 -1.45144 0.278193 0 0 -0.241906 -0.822484 0 0 0.241906zm-0.899453 0.164496c0.000397638,0.0689449 0.0100748,0.130228 0.028622,0.18385 0.0189528,0.053622 0.0435472,0.102008 0.0745866,0.14474 0.0306457,0.0427402 0.0645079,0.082252 0.101602,0.118134 0.036689,0.0358819 0.0737835,0.0705512 0.110472,0.103614 0.0370866,0.0330669 0.0709567,0.0669291 0.101602,0.101602 0.0310394,0.0342677 0.0556339,0.0717598 0.0745827,0.111677 0.0185472,0.0399173 0.0282283,0.0842677 0.0286299,0.133858 0,0.0399094 -0.00564961,0.0721654 -0.0169331,0.0963583 -0.0112913,0.0241929 -0.0270157,0.0415276 -0.0475787,0.0524173 -0.0205591,0.0104803 -0.0451535,0.016126 -0.073378,0.0157205 -0.0282244,0.000405512 -0.052815,-0.00483858 -0.073378,-0.0157205 -0.0205591,-0.0108898 -0.0362874,-0.0282244 -0.0475748,-0.0524173 -0.0112874,-0.0241929 -0.0169331,-0.0560433 -0.0169331,-0.0963583l0 -0.120949 -0.251583 0 0 0.104016c0,0.0907126 0.0149173,0.167319 0.0447559,0.230618 0.0298268,0.0632992 0.0741811,0.111677 0.133047,0.145142 0.0588622,0.033063 0.131839,0.0495945 0.218921,0.0499961 0.0870906,-0.000401575 0.160063,-0.0169331 0.218925,-0.0499961 0.0588661,-0.0334646 0.10322,-0.0818425 0.133051,-0.145142 0.0298386,-0.0632992 0.044752,-0.139906 0.044752,-0.230618 -0.000401575,-0.0689449 -0.0100787,-0.130228 -0.028626,-0.18385 -0.0189488,-0.053622 -0.0435394,-0.102008 -0.0745866,-0.14474 -0.0306378,-0.0427402 -0.0645079,-0.082252 -0.101598,-0.118134 -0.0366929,-0.0358819 -0.0737835,-0.0705512 -0.110472,-0.103614 -0.0370945,-0.0330669 -0.0709606,-0.0669291 -0.101602,-0.101602 -0.0310433,-0.0342677 -0.0556417,-0.0717598 -0.0745866,-0.111677 -0.0185512,-0.0399173 -0.0282205,-0.0846732 -0.028626,-0.133858 0.000405512,-0.0600709 0.011689,-0.102811 0.0346693,-0.12902 0.0229843,-0.0257992 0.0556378,-0.0387047 0.0983819,-0.0378976 0.0427362,-0.000807087 0.0753898,0.0120984 0.098374,0.0378976 0.0229843,0.0262087 0.0342677,0.0689488 0.0346732,0.12902l0 0.0701575 0.251583 0 0 -0.0532244c0,-0.0907126 -0.0149134,-0.167724 -0.0439488,-0.23102 -0.0294291,-0.0632992 -0.073378,-0.111276 -0.131437,-0.14474 -0.0580551,-0.033063 -0.13022,-0.0495945 -0.216508,-0.0499961 -0.0862756,0.000401575 -0.158445,0.0169331 -0.2165,0.0499961 -0.0580591,0.0334646 -0.102004,0.0814409 -0.131441,0.14474 -0.0290236,0.0632953 -0.0439409,0.140307 -0.0439409,0.23102l0 0z" />
+                    <rect class="fil3" width="6.82666" height="6.82666" />
+                </g>
+            </svg>
+
+        </button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('textCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Arrays of possible characters
+        const firstChars = [
+            "赵",
+            "钱",
+            "孙",
+            "李",
+            "周",
+            "吴",
+            "郑",
+            "王",
+            "冯",
+            "陈",
+            "褚",
+            "卫",
+            "蒋",
+            "沈",
+            "韩",
+            "杨",
+            "朱",
+            "秦",
+            "尤",
+            "许",
+            "何",
+            "吕",
+            "施",
+            "张",
+            "孔",
+            "曹",
+            "严",
+            "华",
+            "金",
+            "魏",
+            "陶",
+            "姜",
+            "戚",
+            "谢",
+            "邹",
+            "喻",
+            "柏",
+            "水",
+            "窦",
+            "章",
+            "云",
+            "苏",
+            "潘",
+            "葛",
+            "奚",
+            "范",
+            "彭",
+            "郎",
+            "鲁",
+            "韦",
+            "昌",
+            "马",
+            "苗",
+            "凤",
+            "花",
+            "方",
+            "俞",
+            "任",
+            "袁",
+            "柳",
+            "酆",
+            "鲍",
+            "史",
+            "唐",
+            "费",
+            "廉",
+            "岑",
+            "薛",
+            "雷",
+            "贺",
+            "倪",
+            "汤",
+            "滕",
+            "殷",
+            "罗",
+            "毕",
+            "郝",
+            "邬",
+            "安",
+            "常",
+            "乐",
+            "于",
+            "时",
+            "傅",
+            "皮",
+            "卞",
+            "齐",
+            "康",
+            "伍",
+            "余",
+            "元",
+            "卜",
+            "顾",
+            "孟",
+            "平",
+            "黄",
+            "和",
+            "穆",
+            "萧",
+            "尹",
+            "姚",
+            "邵",
+            "舒",
+            "汪",
+            "祁",
+            "毛",
+            "禹",
+            "狄",
+            "米",
+            "贝",
+            "明",
+            "臧",
+            "计",
+            "伏",
+            "成",
+            "戴",
+            "谈",
+            "宋",
+            "茅",
+            "庞",
+            "熊",
+            "纪",
+            "屈",
+            "项",
+            "祝",
+            "董",
+            "杜",
+            "阮",
+            "蓝",
+            "闵",
+            "席",
+            "季",
+            "麻",
+            "强",
+            "贾",
+            "路",
+            "娄",
+            "危",
+            "江",
+            "童",
+            "颜",
+            "郭",
+            "梅",
+            "盛",
+            "林",
+            "刁",
+            "钟",
+            "徐",
+            "邱",
+            "骆",
+            "高",
+            "夏",
+            "蔡",
+            "田",
+            "樊",
+            "胡",
+            "凌",
+            "霍",
+            "虞",
+            "万",
+            "支",
+            "柯",
+            "咎",
+            "管",
+            "卢",
+            "莫",
+            "经",
+            "房",
+            "裘",
+            "缪",
+            "干",
+            "解",
+            "应",
+            "宗",
+            "宣",
+            "丁",
+            "贲",
+            "邓",
+            "郁",
+            "单",
+            "杭",
+            "洪",
+            "包",
+            "诸",
+            "左",
+            "石",
+            "崔",
+            "吉",
+            "钮",
+            "龚",
+            "程",
+            "嵇",
+            "邢",
+            "滑",
+            "裴",
+            "陆",
+            "荣",
+            "翁",
+            "荀",
+            "羊",
+            "於",
+            "惠",
+            "甄",
+            "加",
+            "封",
+            "芮",
+            "羿",
+            "储",
+            "靳",
+            "汲",
+            "邴",
+            "糜",
+            "松",
+            "井",
+            "段",
+            "富",
+            "巫",
+            "乌",
+            "焦",
+            "巴",
+            "弓",
+            "牧",
+            "隗",
+            "山",
+            "谷",
+            "车"
+        ];
+        const secondChars = [
+            "侯",
+            "宓",
+            "蓬",
+            "全",
+            "郗",
+            "班",
+            "仰",
+            "秋",
+            "仲",
+            "伊",
+            "宫",
+            "宁",
+            "仇",
+            "栾",
+            "暴",
+            "甘",
+            "钭",
+            "厉",
+            "戎",
+            "祖",
+            "武",
+            "符",
+            "刘",
+            "詹",
+            "束",
+            "龙",
+            "叶",
+            "幸",
+            "司",
+            "韶",
+            "郜",
+            "黎",
+            "蓟",
+            "薄",
+            "印",
+            "宿",
+            "白",
+            "怀",
+            "蒲",
+            "台",
+            "从",
+            "鄂",
+            "索",
+            "咸",
+            "籍",
+            "赖",
+            "卓",
+            "蔺",
+            "屠",
+            "蒙",
+            "池",
+            "乔",
+            "阴",
+            "胥",
+            "能",
+            "苍",
+            "双",
+            "闻",
+            "莘",
+            "党",
+            "翟",
+            "谭",
+            "贡",
+            "劳",
+            "逄",
+            "姬",
+            "申",
+            "扶",
+            "堵",
+            "冉",
+            "宰",
+            "郦",
+            "雍",
+            "璩",
+            "桑",
+            "桂",
+            "濮",
+            "牛",
+            "寿",
+            "通",
+            "边",
+            "扈",
+            "燕",
+            "冀",
+            "郏",
+            "浦",
+            "尚",
+            "农",
+            "温",
+            "别",
+            "庄",
+            "晏",
+            "柴",
+            "瞿",
+            "阎",
+            "充",
+            "慕",
+            "连",
+            "茹",
+            "习",
+            "宦",
+            "艾",
+            "鱼",
+            "容",
+            "向",
+            "古",
+            "易",
+            "慎",
+            "戈",
+            "廖",
+            "庚",
+            "终",
+            "暨",
+            "居",
+            "衡",
+            "步",
+            "都",
+            "耿",
+            "满",
+            "弘",
+            "匡",
+            "国",
+            "文",
+            "寇",
+            "广",
+            "禄",
+            "阙",
+            "东",
+            "殳",
+            "沃",
+            "利",
+            "蔚",
+            "越",
+            "夔",
+            "隆",
+            "师",
+            "巩",
+            "厍",
+            "聂",
+            "晁",
+            "勾",
+            "敖",
+            "融",
+            "冷",
+            "訾",
+            "辛",
+            "阚",
+            "那",
+            "简",
+            "饶",
+            "空",
+            "曾",
+            "毋",
+            "沙",
+            "乜",
+            "养",
+            "鞠",
+            "须",
+            "丰",
+            "巢",
+            "关",
+            "蒯",
+            "相",
+            "查",
+            "后",
+            "红",
+            "游",
+            "竺",
+            "权",
+            "逯",
+            "盖",
+            "益",
+            "桓",
+            "公",
+            "晋",
+            "楚",
+            "法",
+            "汝",
+            "鄢",
+            "涂",
+            "钦",
+            "缑",
+            "亢",
+            "况",
+            "有",
+            "商",
+            "牟",
+            "佘",
+            "佴",
+            "伯",
+            "赏",
+            "墨",
+            "哈",
+            "谯",
+            "笪",
+            "年",
+            "爱",
+            "阳",
+            "佟",
+            "琴",
+            "言",
+            "福",
+            "百",
+            "家",
+            "姓",
+            "续",
+            "岳",
+            "帅",
+            "哥"
+        ];
+
+        // Current display characters
+        let currentChar1 = "";
+        let currentChar2 = "";
+
+        function getRandomChar(array) {
+            return array[Math.floor(Math.random() * (array.length - 1))];
+        }
+
+        function drawText() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Set text properties
+            ctx.font = '48px "Microsoft YaHei", "微软雅黑", sans-serif';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = 'black';
+
+            // Draw first character
+            ctx.textAlign = 'right';
+            ctx.fillText(currentChar1, canvas.width / 2 - 10, canvas.height / 2);
+
+            // Draw second character
+            ctx.textAlign = 'left';
+            ctx.fillText(currentChar2, canvas.width / 2 + 10, canvas.height / 2);
+        }
+
+        function animateSlot(isFirstChar, finalChar, delay, onComplete) {
+            const charArray = isFirstChar ? firstChars : secondChars;
+            const updateChar = (char) => {
+                if (isFirstChar) {
+                    currentChar1 = char;
+                } else {
+                    currentChar2 = char;
+                }
+                drawText();
+            };
+
+            // Fast cycling phase
+            for (let i = 0; i < 10; i++) {
+                gsap.delayedCall(delay + (i * 0.1), () => {
+                    updateChar(getRandomChar(charArray));
+                });
+            }
+
+            // Slowing down phase
+            for (let i = 0; i < 6; i++) {
+                gsap.delayedCall(delay + 1 + (i * 0.2), () => {
+                    updateChar(getRandomChar(charArray));
+                });
+            }
+
+            // Final character with scale effect
+            gsap.delayedCall(delay + 2.5, () => {
+                updateChar(finalChar);
+
+                // Scale effect for final character
+                const centerX = isFirstChar ? canvas.width / 2 - 30 : canvas.width / 2 + 30;
+                gsap.fromTo({ scale: 1.5 }, {
+                    scale: 1,
+                    duration: 0.5,
+                    ease: "elastic.out(1, 0.3)",
+                    onUpdate: function () {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                        // Draw the non-scaling character normally
+                        if (isFirstChar) {
+                            ctx.textAlign = 'left';
+                            ctx.fillText(currentChar2, canvas.width / 2 + 10, canvas.height / 2);
+
+                            // Draw scaling character
+                            ctx.save();
+                            ctx.textAlign = 'right';
+                            ctx.translate(centerX, canvas.height / 2);
+                            ctx.scale(this.targets()[0].scale, this.targets()[0].scale);
+                            ctx.fillText(finalChar, 0, 0);
+                            ctx.restore();
+                        } else {
+                            ctx.textAlign = 'right';
+                            ctx.fillText(currentChar1, canvas.width / 2 - 10, canvas.height / 2);
+
+                            // Draw scaling character
+                            ctx.save();
+                            ctx.textAlign = 'left';
+                            ctx.translate(centerX, canvas.height / 2);
+                            ctx.scale(this.targets()[0].scale, this.targets()[0].scale);
+                            ctx.fillText(finalChar, 0, 0);
+                            ctx.restore();
+                        }
+                    },
+                    onComplete: onComplete // Call the completion callback
+                });
+            });
+        }
+
+        function startAnimation() {
+            currentChar1 = "";
+            currentChar2 = "";
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Track completion of both characters
+            let char1Complete = false;
+            let char2Complete = false;
+
+            // Animate first character
+            animateSlot(true, "张", 0, () => {
+                console.log('char1Complete');
+                char1Complete = true;
+                checkCompletion();
+            });
+
+            // Animate second character with delay
+            animateSlot(false, "哥", 0.5, () => {
+                console.log('char2Complete');
+                char2Complete = true;
+                checkCompletion();
+            });
+
+            function checkCompletion() {
+                console.log(char1Complete, char2Complete);
+                if (char1Complete && char2Complete) {
+                    alert('Animation complete!');
+                    console.log('Animation complete!');
+
+                    const container = document.querySelector('.fireworks')
+                    const fireworks = new Fireworks.default(container)
+                    fireworks.start()
+                }
+            }
+        }
+
+        // Initial animation
+        // startAnimation();
+
+        // Click to replay
+        // canvas.addEventListener('click', startAnimation);
+        document.getElementById('startBtn').addEventListener('click', startAnimation);
+    </script>
 </body>
 
 </html>
