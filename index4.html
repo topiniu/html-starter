@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Decrypt SSE Data</title>
+    <!-- Include CryptoJS library for client-side encryption -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+    <div id="output"></div>
+
+    <script>
+        function deriveKey(password, salt) {
+            return CryptoJS.PBKDF2(password, salt, {
+                keySize: 256/32,
+                iterations: 100000,
+                hasher: CryptoJS.algo.SHA256
+            });
+        }
+
+        function decryptData(encryptedData, salt, iv, password) {
+            try {
+                // Convert hex strings to CryptoJS format
+                const saltWords = CryptoJS.enc.Hex.parse(salt);
+                const ivWords = CryptoJS.enc.Hex.parse(iv);
+                const encryptedWords = CryptoJS.enc.Hex.parse(encryptedData);
+                
+                // Derive key using the same parameters as server
+                const key = deriveKey(password, saltWords);
+
+                // Decrypt the data
+                const decrypted = CryptoJS.AES.decrypt(
+                    { ciphertext: encryptedWords },
+                    key,
+                    { iv: ivWords }
+                );
+
+                // Convert to string and parse JSON
+                const decryptedStr = decrypted.toString(CryptoJS.enc.Utf8);
+                return JSON.parse(decryptedStr);
+            } catch (error) {
+                console.error('Decryption error:', error);
+                return null;
+            }
+        }
+
+        // Connect to SSE endpoint
+        const evtSource = new EventSource('http://localhost:3000/api/bz3', {
+                withCredentials: false  // Important for CORS
+            });
+        const outputDiv = document.getElementById('output');
+
+        evtSource.onmessage = (event) => {
+            try {
+                // Parse the encrypted data
+                const { encrypted, salt, iv } = JSON.parse(event.data);
+                const password = 'aaakuangbaokouhaiguaizhangge';
+
+                // Decrypt the data
+                const decryptedData = decryptData(encrypted, salt, iv, password);
+
+                // Display the decrypted data
+                if (decryptedData) {
+                    const div = document.createElement('div');
+                    div.textContent = JSON.stringify(decryptedData);
+                    outputDiv.appendChild(div);
+                }
+            } catch (error) {
+                console.error('Error processing message:', error);
+            }
+        };
+
+        evtSource.onerror = (error) => {
+            console.error('EventSource error:', error);
+            evtSource.close();
+        };
+    </script>
+</body>
+</html>
