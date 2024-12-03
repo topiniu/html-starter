@@ -9,6 +9,11 @@
     <div id="output"></div>
 
     <script>
+        fetch('http://localhost:3000/api/hello')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        });
         function deriveKey(password, salt) {
             return CryptoJS.PBKDF2(password, salt, {
                 keySize: 256/32,
