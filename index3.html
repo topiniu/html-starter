@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Render Pixel Data</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p2.js/0.6.0/p2.min.js"></script>
+</head>
+
+<body>
+    <div id="canvasContainer"></div>
+
+    <script>
+        function deriveKey(password, salt) {
+            return CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
+                keySize: 256/32,
+                iterations: 100000,
+                hasher: CryptoJS.algo.SHA256
+            });
+        }
+
+        // Client-side decryption function
+        function decryptData(encryptedData, salt, iv, password) {
+            try {
+                // Derive key using CryptoJS
+                const key = deriveKey(password, salt);
+                
+                // Create decryption parameters
+                const cipherParams = CryptoJS.lib.CipherParams.create({
+                    ciphertext: CryptoJS.enc.Base64.parse(encryptedData)
+                });
+
+                // Decrypt using CryptoJS
+                const decrypted = CryptoJS.AES.decrypt(
+                    cipherParams,
+                    key,
+                    {
+                        iv: CryptoJS.enc.Base64.parse(iv),
+                        mode: CryptoJS.mode.CBC,
+                        padding: CryptoJS.pad.Pkcs7
+                    }
+                );
+
+                // Convert to string and parse JSON
+                const decryptedStr = decrypted.toString(CryptoJS.enc.Utf8);
+                if (!decryptedStr) {
+                    throw new Error('Decryption resulted in empty string');
+                }
+                return JSON.parse(decryptedStr);
+            } catch (error) {
+                console.error('Decryption error:', error);
+                console.log('Encrypted data:', encryptedData);
+                console.log('Salt:', salt);
+                console.log('IV:', iv);
+                throw error;
+            }
+        }
+
+        // Function to render multiple pixels on canvas
+        function renderPixelsToCanvas(pixels, ctx) {
+            pixels.forEach(pixel => {
+                const [r, g, b] = pixel.color
+                    .replace("rgb(", "")
+                    .replace(")", "")
+                    .split(",")
+                    .map(Number);
+                ctx.fillStyle = `rgb(${r},${g},${b})`;
+                ctx.fillRect(pixel.x, pixel.y, 1, 1);
+            });
+        }
+
+        // Modified to handle multiple pixels in each SSE message
+        function setupSSEConnection() {
+            const canvas = createCanvas('live-canvas');
+            const ctx = canvas.getContext("2d");
+
+            // Set initial canvas size (you might want to adjust these values)
+            canvas.width = 1000;
+            canvas.height = 1000;
+
+            // Only create one EventSource connection
+            const evtSource = new EventSource('http://localhost:3000/api/bz3');
+
+            evtSource.onmessage = async (event) => {
+                try {
+                    const encryptedItems = JSON.parse(event.data);
+                    console.log('Received encrypted items:', encryptedItems);
+                    const password = 'aaakuangbaokouhaiguaizhangge';
+
+                    if (!encryptedItems.encrypted || !encryptedItems.salt || !encryptedItems.iv) {
+                        throw new Error('Missing required encryption parameters');
+                    }
+
+                    const decryptedPixels = decryptData(encryptedItems.encrypted, encryptedItems.salt, encryptedItems.iv, password);
+                    console.log('Decrypted pixels:', decryptedPixels);
+
+                    if (!Array.isArray(decryptedPixels)) {
+                        throw new Error('Decrypted data is not an array');
+                    }
+
+                    renderPixelsToCanvas(decryptedPixels, ctx);
+                } catch (error) {
+                    console.error('Error processing SSE message:', error);
+                }
+            };
+
+            evtSource.onerror = (error) => {
+                console.error('SSE connection error:', error);
+                evtSource.close();
+            };
+        }
+
+        // Initialize single SSE connection
+        setupSSEConnection();
+
+        // Function to create a new canvas
+        function createCanvas(filename) {
+            const container = document.getElementById('canvasContainer');
+            const canvas = document.createElement('canvas');
+            canvas.id = `canvas-${filename}`;
+            canvas.style.margin = '10px';
+            container.appendChild(canvas);
+            return canvas;
+        }
+
+        // Function to load and render a single JSON file
+        async function renderPixelData(filename) {
+            const response = await fetch(`http://localhost:3000/api/bz3`);
+            const data = await response.json();
+
+            const canvas = createCanvas(filename);
+            const ctx = canvas.getContext("2d");
+
+            // Set canvas size
+            canvas.width = Math.max(...data.map(p => p.x)) + 1;
+            canvas.height = Math.max(...data.map(p => p.y)) + 1;
+
+            // Draw each pixel
+            data.forEach(pixel => {
+                const [r, g, b] = pixel.color
+                    .replace("rgb(", "")
+                    .replace(")", "")
+                    .split(",")
+                    .map(Number);
+                ctx.fillStyle = `rgb(${r},${g},${b})`;
+                ctx.fillRect(pixel.x, pixel.y, 1, 1);
+            });
+        }
+
+    </script>
+</body>
+
+</html>
