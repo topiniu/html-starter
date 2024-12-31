@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Render Pixel Data</title>
+    <!-- load font -->
+    <link rel="preload" href="/font.ttf" as="font" type="font/ttf">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p2.js/0.6.0/p2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        @font-face {
+            font-family: wencangshufang;
+            src: url('./font.ttf');
+        }
+
+        .animationContainer{
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .start-btn {
+            position: fixed;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform-origin: center;
+            border-radius: 6px;
+            border: 1px solid #fff;
+            /* make img render by center */
+        }
+
+        .start-btn:hover {
+            opacity: 0.8;
+            border-color: #e5e5e5;
+            /* transform: scale(1.1); */
+            /* img scale not in center */
+        }
+    </style>
+</head>
+
+<body>
+    <img id="start-btn" class="start-btn" src="./start.webp" alt="bg" id="bg">
+    <div id="canvasContainer"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+    </div>
+    <div class="animationContainer" id="animationContainer">
+        <p style="
+            font-family: 'wencangshufang';
+            font-size: 46px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-121px, -66px);">
+            谢
+        </p>
+        <p style="
+            font-family: 'wencangshufang';
+            font-size: 46px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-70px, -66px);">
+            谢
+        </p>
+
+        <p id="n1" style="
+            font-family: 'wencangshufang';
+            font-size: 46px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-20px, -66px);">
+            赵
+        </p>
+
+        <p id="n2" style="
+            font-family: 'wencangshufang';
+            font-size: 46px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(30px, -66px);">
+            钱
+        </p>
+    </div>
+    <script src="decode.js"></script>
+</body>
+
+</html>
